@@ -1,3 +1,15 @@
 *~
 *.bak
-piwik
+/_site/
+/.jekyll-cache/
+/site/.jekyll-cache/
+/scripts/__pycache__/
+/tests/__pycache__/
+/site/documentation/readme.md
+/site/documentation/install.md
+/site/documentation/language.md
+/site/documentation/upgrade.md
+/site/documentation/authentication.md
+/site/documentation/news.md
+/site/documentation/changelog.md
+/site/documentation/license.md

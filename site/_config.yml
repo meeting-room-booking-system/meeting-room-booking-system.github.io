@@ -1,0 +1,8 @@
+title: MRBS
+description: Meeting Room Booking System
+url: https://meeting-room-booking-system.github.io
+baseurl: ""
+markdown: kramdown
+permalink: pretty
+exclude:
+  - README.md

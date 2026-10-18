@@ -1,0 +1,478 @@
+:root {
+  color-scheme: light;
+  --ink: #172622;
+  --muted: #52635d;
+  --paper: #f5f7f2;
+  --surface: #ffffff;
+  --line: #d7e0d8;
+  --green: #176b52;
+  --green-dark: #10523e;
+  --lime: #d7ef67;
+  --coral: #d65a43;
+  --display: "Space Grotesk", "Trebuchet MS", sans-serif;
+  --body: "DM Sans", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+a {
+  color: var(--green-dark);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--coral);
+}
+
+.skip-link {
+  position: absolute;
+  top: -5rem;
+  left: 1rem;
+  z-index: 2;
+  padding: 0.6rem 0.9rem;
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  min-height: 76px;
+  padding: 0.8rem clamp(1.1rem, 5vw, 5rem);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  width: 36px;
+  aspect-ratio: 1;
+  place-items: center;
+  background: var(--green);
+  color: white;
+  font-family: var(--display);
+  font-weight: 700;
+}
+
+.brand-name {
+  font-family: var(--display);
+  font-size: 1.12rem;
+  font-weight: 700;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.2rem 1.2rem;
+}
+
+.site-nav a {
+  padding: 0.35rem 0;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-nav a:focus-visible {
+  color: var(--green);
+  text-decoration: underline;
+  text-decoration-color: var(--lime);
+  text-decoration-thickness: 3px;
+}
+
+.site-main {
+  width: min(1120px, calc(100% - 2.5rem));
+  min-height: calc(100vh - 160px);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 5.5rem) 0;
+}
+
+.home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding-bottom: clamp(3rem, 7vw, 6rem);
+}
+
+.home-hero h1,
+.page-heading h1 {
+  max-width: 760px;
+  margin: 0;
+  font-family: var(--display);
+  font-size: 5rem;
+  line-height: 0.99;
+  font-weight: 600;
+}
+
+.home-hero h1 span {
+  color: var(--green);
+}
+
+.home-hero p {
+  max-width: 600px;
+  margin: 1.5rem 0 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.hero-image {
+  position: relative;
+  margin: 0;
+  padding: 1rem;
+  background: var(--lime);
+  transform: rotate(1.3deg);
+  animation: arrive 550ms ease-out both;
+}
+
+.hero-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(23, 38, 34, 0.18);
+  background: white;
+}
+
+.hero-image figcaption {
+  padding-top: 0.55rem;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.eyebrow {
+  margin: 0 0 0.8rem;
+  color: var(--coral);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.7rem;
+}
+
+.button {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--green);
+  background: var(--green);
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.button:hover {
+  border-color: var(--green-dark);
+  background: var(--green-dark);
+  color: white;
+}
+
+.button-secondary {
+  background: transparent;
+  color: var(--green-dark);
+}
+
+.button-secondary:hover {
+  background: var(--green-dark);
+}
+
+.section-band {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.7fr) minmax(0, 1.3fr);
+  gap: 2rem;
+  padding: clamp(2rem, 4vw, 3.5rem) 0;
+  border-top: 1px solid var(--line);
+}
+
+.section-band h2,
+.prose h2 {
+  margin: 0 0 0.8rem;
+  font-family: var(--display);
+  font-size: 1.75rem;
+  line-height: 1.15;
+}
+
+.section-band p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.sourceforge-credit {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.sourceforge-credit a {
+  display: grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+}
+
+.sourceforge-credit img {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+.section-band .sourceforge-credit p {
+  max-width: 64ch;
+  font-size: 0.94rem;
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature-list li {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.page-heading {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.8rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.page-heading h1 {
+  font-size: 4rem;
+}
+
+.prose {
+  max-width: 820px;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  max-width: 75ch;
+}
+
+.prose h2 {
+  margin-top: 2.5rem;
+}
+
+.prose h3 {
+  margin-top: 1.8rem;
+  font-family: var(--display);
+}
+
+.screenshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.screenshot-grid a {
+  display: block;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.screenshot-grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+}
+
+.screenshot-grid span {
+  display: block;
+  padding-top: 0.7rem;
+  font-weight: 700;
+}
+
+.doc-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.doc-list a {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem 0.8rem 0;
+  border-bottom: 1px solid var(--line);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.doc-list a::after {
+  color: var(--coral);
+  content: "↗";
+}
+
+.plain-document {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1.2rem;
+  border-left: 3px solid var(--lime);
+  background: #eef2eb;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  padding: 1.3rem clamp(1.1rem, 5vw, 5rem);
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.site-footer a {
+  font-weight: 700;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(12px) rotate(1.3deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(1.3deg);
+  }
+}
+
+@media (max-width: 780px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+    gap: 0.15rem 1rem;
+  }
+
+  .home-hero,
+  .section-band {
+    grid-template-columns: 1fr;
+  }
+
+  .home-hero {
+    gap: 2rem;
+  }
+
+  .home-hero h1 {
+    font-size: 3.5rem;
+  }
+
+  .page-heading h1 {
+    font-size: 3.25rem;
+  }
+
+  .hero-image {
+    max-width: 620px;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-main {
+    width: min(100% - 2rem, 1120px);
+  }
+
+  .feature-list,
+  .screenshot-grid,
+  .doc-list {
+    grid-template-columns: 1fr;
+  }
+
+  .home-hero h1 {
+    font-size: 2.7rem;
+  }
+
+  .page-heading h1 {
+    font-size: 2.5rem;
+  }
+
+  .site-footer {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+  }
+}
