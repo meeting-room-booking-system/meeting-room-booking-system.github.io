@@ -4,8 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       mrbs_code_tag:
-        description: Tag to import from mrbs-code (for example, v1.12.2)
-        required: true
+        description: Optional tag to import (for example, v1.12.2; use only one ref input)
+        required: false
+        default: ''
+        type: string
+      mrbs_code_branch:
+        description: Optional branch to import (for example, main; use only one ref input)
+        required: false
+        default: ''
         type: string
 
 permissions:
@@ -24,11 +30,17 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Validate mrbs-code ref
+        if: ${{ (inputs.mrbs_code_tag == '') == (inputs.mrbs_code_branch == '') }}
+        run: |
+          echo "::error::Provide exactly one of mrbs_code_tag or mrbs_code_branch."
+          exit 1
+
       - name: Check out application documentation
         uses: actions/checkout@v7
         with:
           repository: meeting-room-booking-system/mrbs-code
-          ref: refs/tags/${{ inputs.mrbs_code_tag }}
+          ref: ${{ inputs.mrbs_code_tag != '' && format('refs/tags/{0}', inputs.mrbs_code_tag) || format('refs/heads/{0}', inputs.mrbs_code_branch) }}
           path: upstream/mrbs-code
           persist-credentials: false
 

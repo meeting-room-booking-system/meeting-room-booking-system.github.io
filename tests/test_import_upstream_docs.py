@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 from scripts.import_upstream_docs import rewrite_readme_links, stage_readme
+from scripts.site import normalize_baseurl
 
 
 class StageReadmeTests(unittest.TestCase):
@@ -60,6 +61,18 @@ class StageReadmeTests(unittest.TestCase):
 
             with self.assertRaises(FileNotFoundError):
                 stage_readme(source, root / "site" / "documentation")
+
+
+class BaseUrlTests(unittest.TestCase):
+    def test_root_slash_normalizes_to_empty(self) -> None:
+        self.assertEqual(normalize_baseurl("/"), "")
+
+    def test_subdirectory_prefix_is_normalized(self) -> None:
+        self.assertEqual(normalize_baseurl("/~jberanek/mrbs-website/"), "/~jberanek/mrbs-website")
+
+    def test_non_path_baseurl_is_rejected(self) -> None:
+        with self.assertRaises(ValueError):
+            normalize_baseurl("https://example.com")
 
 
 if __name__ == "__main__":
