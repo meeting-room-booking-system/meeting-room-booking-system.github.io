@@ -1,15 +1,21 @@
 name: Deploy GitHub Pages
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'scripts/**'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
     inputs:
       mrbs_code_tag:
-        description: Optional tag to import (for example, v1.12.2; use only one ref input)
+        description: Optional tag to import (for example, v1.12.2); leave both inputs empty for the latest release tag
         required: false
         default: ''
         type: string
       mrbs_code_branch:
-        description: Optional branch to import (for example, main; use only one ref input)
+        description: Optional branch to import (for example, main); leave both inputs empty for the latest release tag
         required: false
         default: ''
         type: string
@@ -30,17 +36,36 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Validate mrbs-code ref
-        if: ${{ (inputs.mrbs_code_tag == '') == (inputs.mrbs_code_branch == '') }}
+      - name: Resolve mrbs-code ref
+        id: ref
+        env:
+          TAG: ${{ inputs.mrbs_code_tag }}
+          BRANCH: ${{ inputs.mrbs_code_branch }}
         run: |
-          echo "::error::Provide exactly one of mrbs_code_tag or mrbs_code_branch."
-          exit 1
+          if [ -n "$TAG" ] && [ -n "$BRANCH" ]; then
+            echo "::error::Provide at most one of mrbs_code_tag or mrbs_code_branch."
+            exit 1
+          elif [ -n "$TAG" ]; then
+            ref="refs/tags/$TAG"
+          elif [ -n "$BRANCH" ]; then
+            ref="refs/heads/$BRANCH"
+          else
+            ref=$(git ls-remote --tags --refs --sort=-v:refname \
+              https://github.com/meeting-room-booking-system/mrbs-code 'v[0-9]*' \
+              | sed -n '1s/.*\t//p')
+            if [ -z "$ref" ]; then
+              echo "::error::No release tag found in mrbs-code."
+              exit 1
+            fi
+          fi
+          echo "Importing documentation from $ref"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
       - name: Check out application documentation
         uses: actions/checkout@v7
         with:
           repository: meeting-room-booking-system/mrbs-code
-          ref: ${{ inputs.mrbs_code_tag != '' && format('refs/tags/{0}', inputs.mrbs_code_tag) || format('refs/heads/{0}', inputs.mrbs_code_branch) }}
+          ref: ${{ steps.ref.outputs.ref }}
           path: upstream/mrbs-code
           persist-credentials: false
 

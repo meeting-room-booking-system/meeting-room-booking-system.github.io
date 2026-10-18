@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 import argparse
-import os
 import shutil
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 
@@ -28,42 +26,6 @@ def normalize_baseurl(value: str | None) -> str | None:
     return value.rstrip("/")
 
 
-def find_jekyll(explicit: str | None) -> str:
-    if explicit:
-        executable = shutil.which(explicit)
-        if executable:
-            return executable
-        candidate = Path(explicit).expanduser()
-        if candidate.is_file() and os.access(candidate, os.X_OK):
-            return str(candidate)
-        raise RuntimeError(f"Jekyll executable not found: {explicit}")
-
-    executable = shutil.which("jekyll")
-    if executable:
-        return executable
-
-    gem = shutil.which("gem")
-    if gem:
-        result = subprocess.run(
-            [gem, "env", "user_gemhome"],
-            check=False,
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode == 0:
-            gem_bin = Path(result.stdout.strip()) / "bin"
-            candidates = sorted(gem_bin.glob("jekyll*"))
-            for candidate in candidates:
-                if candidate.is_file() and os.access(candidate, os.X_OK):
-                    return str(candidate)
-
-    raise RuntimeError(
-        "Jekyll was not found on PATH or in RubyGems' user bin directory. "
-        "Install it with `gem install --user-install jekyll`, ensure Ruby "
-        "development headers are installed, or pass --jekyll /path/to/executable."
-    )
-
-
 def import_documents(code_repo: Path) -> None:
     source = code_repo.expanduser().resolve()
     if not source.is_dir():
@@ -76,7 +38,6 @@ def import_documents(code_repo: Path) -> None:
 
 
 def jekyll_command(
-    jekyll: str,
     operation: str,
     destination: Path,
     baseurl: str | None,
@@ -84,7 +45,9 @@ def jekyll_command(
     port: int | None = None,
 ) -> list[str]:
     command = [
-        jekyll,
+        "bundle",
+        "exec",
+        "jekyll",
         operation,
         "--source",
         str(SITE),
@@ -100,6 +63,16 @@ def jekyll_command(
     return command
 
 
+def run_jekyll(command: list[str]) -> None:
+    if not shutil.which("bundle"):
+        raise RuntimeError(
+            "Bundler was not found; install Ruby and Bundler, then run "
+            "`bundle config set --local path vendor/bundle && bundle install`"
+        )
+    print(f"Running: {' '.join(command)}")
+    subprocess.run(command, cwd=ROOT, check=True)
+
+
 def add_site_options(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--code-repo",
@@ -112,96 +85,53 @@ def add_site_options(parser: argparse.ArgumentParser) -> None:
         help="URL path prefix, e.g. /~user/site; omit for the configured default or use / for root",
     )
     parser.add_argument(
-        "--jekyll",
-        help="Jekyll executable path or name; normally auto-detected",
+        "--destination", type=Path, default=ROOT / "_site", help="build output directory"
     )
+
+
+def prepare(args: argparse.Namespace) -> tuple[Path, str | None]:
+    destination = args.destination.expanduser().resolve()
+    if destination == Path("/") or destination == Path.home() or destination in ROOT.parents:
+        raise RuntimeError(f"Refusing to use {destination} as the output directory")
+    import_documents(args.code_repo)
+    return destination, normalize_baseurl(args.baseurl)
 
 
 def build(args: argparse.Namespace) -> None:
-    import_documents(args.code_repo)
-    jekyll = find_jekyll(args.jekyll)
-    baseurl = normalize_baseurl(args.baseurl)
-    destination = args.destination.expanduser().resolve()
-    command = jekyll_command(jekyll, "build", destination, baseurl)
-    print(f"Running: {' '.join(command)}")
-    subprocess.run(command, cwd=ROOT, check=True)
+    destination, baseurl = prepare(args)
+    if args.clean:
+        run_jekyll(jekyll_command("clean", destination, None))
+    run_jekyll(jekyll_command("build", destination, baseurl))
 
 
 def serve(args: argparse.Namespace) -> None:
-    import_documents(args.code_repo)
-    jekyll = find_jekyll(args.jekyll)
-    baseurl = normalize_baseurl(args.baseurl)
-    destination = args.destination.expanduser().resolve()
-    command = jekyll_command(
-        jekyll, "serve", destination, baseurl, host=args.host, port=args.port
+    destination, baseurl = prepare(args)
+    run_jekyll(
+        jekyll_command("serve", destination, baseurl, host=args.host, port=args.port)
     )
-    print(f"Running: {' '.join(command)}")
-    subprocess.run(command, cwd=ROOT, check=True)
-
-
-def deploy(args: argparse.Namespace) -> None:
-    import_documents(args.code_repo)
-    jekyll = find_jekyll(args.jekyll)
-    baseurl = normalize_baseurl(args.baseurl)
-    webroot = args.webroot.expanduser().resolve()
-    if not webroot.is_dir():
-        raise RuntimeError(f"Deployment webroot must already exist: {webroot}")
-    if webroot == Path("/") or webroot == ROOT or ROOT in webroot.parents:
-        raise RuntimeError(f"Refusing to deploy into the repository: {webroot}")
-
-    rsync = shutil.which("rsync")
-    if not rsync:
-        raise RuntimeError("rsync was not found; install rsync to use deploy")
-
-    with tempfile.TemporaryDirectory(prefix="mrbs-site-") as temporary_directory:
-        destination = Path(temporary_directory) / "site"
-        command = jekyll_command(jekyll, "build", destination, baseurl)
-        print(f"Running: {' '.join(command)}")
-        subprocess.run(command, cwd=ROOT, check=True)
-
-        sync = [rsync, "--archive", "--human-readable", "--itemize-changes"]
-        if args.delete:
-            sync.append("--delete")
-        sync.extend([str(destination) + os.sep, str(webroot) + os.sep])
-        print(f"Running: {' '.join(sync)}")
-        subprocess.run(sync, check=True)
 
 
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Build, serve, or deploy the MRBS Jekyll website locally."
+        description="Build or serve the MRBS Jekyll website locally."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     build_parser = subparsers.add_parser("build", help="build static files")
     add_site_options(build_parser)
     build_parser.add_argument(
-        "--destination", type=Path, default=ROOT / "_site", help="build output directory"
+        "--clean",
+        action="store_true",
+        help="first delete the destination directory and Jekyll's cache; "
+        "use only for a directory dedicated to this site",
     )
     build_parser.set_defaults(func=build)
 
     serve_parser = subparsers.add_parser("serve", help="run Jekyll's local web server")
     add_site_options(serve_parser)
-    serve_parser.add_argument(
-        "--destination", type=Path, default=ROOT / "_site", help="build output directory"
-    )
     serve_parser.add_argument("--host", default="127.0.0.1", help="bind address")
     serve_parser.add_argument("--port", type=int, default=4000, help="listen port")
     serve_parser.set_defaults(func=serve)
-
-    deploy_parser = subparsers.add_parser(
-        "deploy", help="build and rsync the site to a local webroot"
-    )
-    add_site_options(deploy_parser)
-    deploy_parser.add_argument(
-        "--webroot", type=Path, required=True, help="existing destination webroot"
-    )
-    deploy_parser.add_argument(
-        "--delete",
-        action="store_true",
-        help="remove destination files absent from the build; use only for a dedicated site directory",
-    )
-    deploy_parser.set_defaults(func=deploy)
 
     return parser
 

@@ -1,0 +1,40 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out website repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Check out application documentation
+        uses: actions/checkout@v7
+        with:
+          repository: meeting-room-booking-system/mrbs-code
+          path: upstream/mrbs-code
+          persist-credentials: false
+
+      - name: Run tests
+        run: python3 -m unittest discover -s tests
+
+      - name: Import upstream documentation
+        run: python3 scripts/import_upstream_docs.py upstream/mrbs-code site
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Build Jekyll site
+        run: bundle exec jekyll build --source site --destination _site --baseurl ""
