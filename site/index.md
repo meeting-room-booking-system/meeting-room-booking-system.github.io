@@ -14,7 +14,7 @@ permalink: /
     </div>
   </div>
   <figure class="hero-image">
-    <a href="{{ '/screenshots/mrbs_main.png' | relative_url }}"><img src="{{ '/screenshots/mrbs_main_s.png' | relative_url }}" alt="MRBS room booking calendar interface"></a>
+    <img src="{{ '/screenshots/mrbs_main.png' | relative_url }}" alt="MRBS room booking calendar interface">
     <figcaption>Room availability at a glance</figcaption>
   </figure>
 </section>

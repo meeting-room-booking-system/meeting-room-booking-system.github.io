@@ -156,7 +156,6 @@ a:hover {
   margin: 0;
   padding: 1rem;
   background: var(--lime);
-  transform: rotate(1.3deg);
   animation: arrive 550ms ease-out both;
 }
 
@@ -401,12 +400,10 @@ a:hover {
 @keyframes arrive {
   from {
     opacity: 0;
-    transform: translateY(12px) rotate(1.3deg);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0) rotate(1.3deg);
   }
 }
 
