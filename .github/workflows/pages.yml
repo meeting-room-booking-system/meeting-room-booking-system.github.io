@@ -20,12 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out website repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
       - name: Check out application documentation
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: meeting-room-booking-system/mrbs-code
           ref: refs/tags/${{ inputs.mrbs_code_tag }}
@@ -33,7 +33,7 @@ jobs:
           persist-credentials: false
 
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Import upstream documentation
         run: python3 scripts/import_upstream_docs.py upstream/mrbs-code site
@@ -45,7 +45,7 @@ jobs:
           destination: ./_site
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./_site
 
@@ -61,4 +61,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
