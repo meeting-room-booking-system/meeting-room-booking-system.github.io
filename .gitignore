@@ -13,3 +13,6 @@
 /site/documentation/news.md
 /site/documentation/changelog.md
 /site/documentation/license.md
+/.bundle/
+/vendor/
+/Gemfile.lock
