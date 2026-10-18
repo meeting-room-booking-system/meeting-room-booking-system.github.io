@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ site.description | escape }}">
+    <title>{% if page.title %}{{ page.title | escape }} | {% endif %}{{ site.title | escape }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ '/assets/site.css' | relative_url }}">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="{{ '/' | relative_url }}" aria-label="MRBS home">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span class="brand-name">MRBS</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <a href="{{ '/demo/' | relative_url }}">Demo</a>
+        <a href="{{ '/screenshots/' | relative_url }}">Screenshots</a>
+        <a href="{{ '/download/' | relative_url }}">Download</a>
+        <a href="{{ '/documentation/' | relative_url }}">Documentation</a>
+        <a href="{{ '/news/' | relative_url }}">News</a>
+        <a href="{{ '/changelog/' | relative_url }}">ChangeLog</a>
+        <a href="{{ '/contact/' | relative_url }}">Contact</a>
+      </nav>
+    </header>
+    <main id="main" class="site-main">
+      {{ content }}
+    </main>
+    <footer class="site-footer">
+      <span>MRBS is free software for booking meeting rooms and other resources.</span>
+      <a href="https://github.com/meeting-room-booking-system/mrbs-code">Source code on GitHub</a>
+    </footer>
+  </body>
+</html>
