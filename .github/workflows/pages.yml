@@ -45,6 +45,10 @@ jobs:
           TAG: ${{ inputs.mrbs_code_tag }}
           BRANCH: ${{ inputs.mrbs_code_branch }}
         run: |
+          if [[ -n "$TAG" && ! "$TAG" =~ ^[A-Za-z0-9._/-]+$ ]] || [[ -n "$BRANCH" && ! "$BRANCH" =~ ^[A-Za-z0-9._/-]+$ ]]; then
+            echo "::error::mrbs_code_tag and mrbs_code_branch may only contain letters, digits, '.', '_', '/' and '-'."
+            exit 1
+          fi
           if [ -n "$TAG" ] && [ -n "$BRANCH" ]; then
             echo "::error::Provide at most one of mrbs_code_tag or mrbs_code_branch."
             exit 1
