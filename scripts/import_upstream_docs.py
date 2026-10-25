@@ -18,7 +18,6 @@ DOCUMENTS = {
 
 README_LINK_TARGETS = {
     "README": "readme",
-    "README.MD": "readme",
     **{filename.upper(): slug for filename, slug in DOCUMENTS.items()},
 }
 README_TOP_LEVEL_LINKS = {
@@ -26,7 +25,7 @@ README_TOP_LEVEL_LINKS = {
     "changelog": "../../changelog/",
 }
 README_LINK = re.compile(
-    r"(?P<prefix>\]\()(?P<target>(?:\./)?(?:README(?:\.md)?|INSTALL|LANGUAGE|UPGRADE|AUTHENTICATION|NEWS|ChangeLog|LICENSE)(?:#[^)\s]*)?)(?P<suffix>\))",
+    r"(?P<prefix>\]\()(?P<target>(?:\./)?(?:README|INSTALL|LANGUAGE|UPGRADE|AUTHENTICATION|NEWS|ChangeLog|LICENSE)(?:\.md)?(?:#[^)\s]*)?)(?P<suffix>\))",
     re.IGNORECASE,
 )
 
@@ -35,7 +34,7 @@ def rewrite_readme_links(content: str) -> str:
     def replace_link(match: re.Match[str]) -> str:
         target = match.group("target")
         path, separator, fragment = target.partition("#")
-        filename = Path(path.removeprefix("./")).name.upper()
+        filename = Path(path.removeprefix("./")).name.upper().removesuffix(".MD")
         slug = README_LINK_TARGETS.get(filename)
         if slug is None:
             return match.group(0)
@@ -50,31 +49,43 @@ def rewrite_readme_links(content: str) -> str:
     return README_LINK.sub(replace_link, content)
 
 
-def stage_readme(source: Path, destination: Path) -> bool:
-    readme_markdown = source / "README.md"
-    readme_plaintext = source / "README"
-    if readme_markdown.is_file():
-        readme_content = readme_markdown.read_text(encoding="utf-8")
-        readme_content = rewrite_readme_links(readme_content)
-        readme_page = page_front_matter(
-            "README", "readme", layout="markdown"
-        ) + readme_content
-        is_markdown = True
-    elif readme_plaintext.is_file():
-        readme_content = readme_plaintext.read_text(encoding="utf-8")
-        readme_page = (
-            page_front_matter("README", "readme")
+def find_document(source: Path, name: str) -> Path | None:
+    """Return the Markdown version of a document if present, else the plain text one."""
+    for candidate in (source / f"{name}.md", source / name):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def stage_document(
+    source: Path, destination: Path, name: str, slug: str, top_level: bool = False
+) -> bool:
+    document = find_document(source, name)
+    if document is None:
+        raise FileNotFoundError(f"Neither {name}.md nor {name} exists in {source}")
+
+    content = document.read_text(encoding="utf-8")
+    is_markdown = document.suffix.lower() == ".md"
+    if is_markdown:
+        page = (
+            page_front_matter(name, slug, top_level=top_level, layout="markdown")
+            + rewrite_readme_links(content)
+        )
+    else:
+        page = (
+            page_front_matter(name, slug, top_level=top_level)
             + '<pre class="plain-document">'
-            + escape(readme_content)
+            + escape(content)
             + "</pre>\n"
         )
-        is_markdown = False
-    else:
-        raise FileNotFoundError(f"Neither README.md nor README exists in {source}")
 
     destination.mkdir(parents=True, exist_ok=True)
-    (destination / "readme.md").write_text(readme_page, encoding="utf-8")
+    (destination / f"{slug}.md").write_text(page, encoding="utf-8")
     return is_markdown
+
+
+def stage_readme(source: Path, destination: Path) -> bool:
+    return stage_document(source, destination, "README", "readme")
 
 
 def page_front_matter(
@@ -97,11 +108,10 @@ def main() -> None:
     parser.add_argument("site", type=Path)
     args = parser.parse_args()
 
-    if not (args.source / "README.md").is_file() and not (args.source / "README").is_file():
-        parser.error(f"Neither README.md nor README exists in {args.source}")
-
     missing_documents = [
-        filename for filename in DOCUMENTS if not (args.source / filename).is_file()
+        name
+        for name in ["README", *DOCUMENTS]
+        if find_document(args.source, name) is None
     ]
     if missing_documents:
         parser.error("Required upstream documents are missing: " + ", ".join(missing_documents))
@@ -110,16 +120,13 @@ def main() -> None:
     stage_readme(args.source, destination)
 
     for filename, slug in DOCUMENTS.items():
-        source_file = args.source / filename
-        content = source_file.read_text(encoding="utf-8")
-        top_level = filename in {"NEWS", "ChangeLog"}
-        page = (
-            page_front_matter(filename, slug, top_level=top_level)
-            + '<pre class="plain-document">'
-            + escape(content)
-            + "</pre>\n"
+        stage_document(
+            args.source,
+            destination,
+            filename,
+            slug,
+            top_level=filename in {"NEWS", "ChangeLog"},
         )
-        (destination / f"{slug}.md").write_text(page, encoding="utf-8")
 
 
 if __name__ == "__main__":
