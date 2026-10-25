@@ -86,5 +86,6 @@ permalink: /
   </div>
   <div>
     <p>Use the <a href="https://github.com/meeting-room-booking-system/mrbs-code/issues">GitHub issue tracker</a> for support and bug reports.</p>
+    <p>Join the <a href="https://github.com/meeting-room-booking-system/mrbs-code/discussions">GitHub Discussions forum</a> for announcements and community discussion.</p>
   </div>
 </section>
