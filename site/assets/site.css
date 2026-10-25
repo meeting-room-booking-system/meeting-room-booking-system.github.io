@@ -413,6 +413,77 @@ a:hover {
   font-weight: 700;
 }
 
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--green-dark);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: var(--coral);
+}
+
+.consent-banner {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 6px 24px rgba(23, 38, 34, 0.18);
+  font-size: 0.9rem;
+}
+
+.consent-banner p {
+  flex: 1 1 22rem;
+  margin: 0;
+}
+
+.consent-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.consent-button {
+  padding: 0.55rem 1.2rem;
+  border: 2px solid var(--green-dark);
+  border-radius: 6px;
+  background: var(--green-dark);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.consent-button:hover,
+.consent-button:focus-visible {
+  border-color: var(--coral);
+  background: var(--coral);
+}
+
 @keyframes arrive {
   from {
     opacity: 0;

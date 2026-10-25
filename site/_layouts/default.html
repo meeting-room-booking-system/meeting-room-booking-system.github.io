@@ -30,7 +30,12 @@
     </main>
     <footer class="site-footer">
       <span>MRBS is free software for booking meeting rooms and other resources.</span>
-      <a href="https://github.com/meeting-room-booking-system/mrbs-code">Source code on GitHub</a>
+      <span class="footer-links">
+        <a href="{{ '/privacy/' | relative_url }}">Privacy</a>
+        <button type="button" class="link-button" data-cookie-settings hidden>Cookie settings</button>
+        <a href="https://github.com/meeting-room-booking-system/mrbs-code">Source code on GitHub</a>
+      </span>
     </footer>
+    <script src="{{ '/assets/consent.js' | relative_url }}" data-ga-id="G-M4RE2KVG1H" data-privacy-url="{{ '/privacy/' | relative_url }}"></script>
   </body>
 </html>

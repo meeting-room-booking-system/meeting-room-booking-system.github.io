@@ -107,4 +107,16 @@ source pages under `site/`; do not edit generated pages in
 `site/documentation/`.
 
 Fonts (DM Sans and Space Grotesk, SIL Open Font License) are self-hosted in
-`site/assets/fonts/`, so pages make no requests to third-party servers.
+`site/assets/fonts/`, so pages make no requests to third-party servers, with
+one exception: Google Analytics.
+
+## Analytics and Cookie Consent
+
+Google Analytics (GA4) is loaded by
+[`site/assets/consent.js`](site/assets/consent.js) only after a visitor
+accepts the cookie banner; until then no request is made to Google and no
+cookies are set. The choice is kept in `localStorage` and can be changed from
+the "Cookie settings" link in the footer. The measurement ID is set in the
+`data-ga-id` attribute in
+[`site/_layouts/default.html`](site/_layouts/default.html), and the
+[privacy page](site/privacy/index.md) describes what is collected.
