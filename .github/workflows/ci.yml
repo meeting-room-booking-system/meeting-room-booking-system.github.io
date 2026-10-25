@@ -10,6 +10,11 @@ permissions:
 
 jobs:
   check:
+    # Skip for "chore:" / "chore(scope):" commits (push) or PR titles (pull_request).
+    # GitHub also natively honours [skip ci] and similar tags in the commit message.
+    if: >-
+      !startsWith(github.event.head_commit.message || github.event.pull_request.title, 'chore:') &&
+      !startsWith(github.event.head_commit.message || github.event.pull_request.title, 'chore(')
     runs-on: ubuntu-latest
     steps:
       - name: Check out website repository

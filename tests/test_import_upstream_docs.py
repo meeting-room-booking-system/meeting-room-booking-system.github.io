@@ -2,7 +2,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.import_upstream_docs import rewrite_readme_links, stage_readme
+from scripts.import_upstream_docs import (
+    find_document,
+    rewrite_readme_links,
+    stage_document,
+    stage_readme,
+)
 from scripts.site import normalize_baseurl
 
 
@@ -61,6 +66,45 @@ class StageReadmeTests(unittest.TestCase):
 
             with self.assertRaises(FileNotFoundError):
                 stage_readme(source, root / "site" / "documentation")
+
+
+class StageDocumentTests(unittest.TestCase):
+    def test_markdown_preferred_for_any_document(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            source = root / "source"
+            destination = root / "site" / "documentation"
+            source.mkdir()
+            (source / "INSTALL.md").write_text("# Md install\n[up](UPGRADE.md)\n", encoding="utf-8")
+            (source / "INSTALL").write_text("Plain install\n", encoding="utf-8")
+
+            is_markdown = stage_document(source, destination, "INSTALL", "install")
+            output = (destination / "install.md").read_text(encoding="utf-8")
+
+            self.assertTrue(is_markdown)
+            self.assertIn("layout: markdown", output)
+            self.assertIn("# Md install", output)
+            self.assertIn("[up](../upgrade/)", output)
+            self.assertNotIn("Plain install", output)
+
+    def test_plaintext_fallback_and_top_level_permalink(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            source = root / "source"
+            destination = root / "site" / "documentation"
+            source.mkdir()
+            (source / "NEWS").write_text("<a> & b\n", encoding="utf-8")
+
+            is_markdown = stage_document(source, destination, "NEWS", "news", top_level=True)
+            output = (destination / "news.md").read_text(encoding="utf-8")
+
+            self.assertFalse(is_markdown)
+            self.assertIn("permalink: /news/", output)
+            self.assertIn("&lt;a&gt; &amp; b", output)
+
+    def test_find_document_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            self.assertIsNone(find_document(Path(temporary_directory), "LICENSE"))
 
 
 class BaseUrlTests(unittest.TestCase):
