@@ -2,6 +2,7 @@
 layout: page
 title: Screenshots
 permalink: /screenshots/
+description: "Screenshots of the Meeting Room Booking System (MRBS), showing the main calendar views, booking forms, search and administration pages."
 ---
 <p>A look at the calendar, booking, search, and administration screens.</p>
 

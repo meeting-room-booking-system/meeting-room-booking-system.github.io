@@ -2,6 +2,7 @@
 layout: page
 title: Contact
 permalink: /contact/
+description: "How to get support for MRBS, report bugs and join community discussion on GitHub."
 ---
 <p>The preferred way to get support from the MRBS development team is through the <a href="https://github.com/meeting-room-booking-system/mrbs-code/issues">GitHub issue tracker</a>.</p>
 

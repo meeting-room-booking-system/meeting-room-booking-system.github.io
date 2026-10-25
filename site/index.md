@@ -2,6 +2,7 @@
 layout: default
 title: Meeting Room Booking System
 permalink: /
+description: "MRBS is a free, open-source, web-based meeting room booking system. It runs on PHP with MySQL or PostgreSQL and is suitable for booking rooms and other shared resources."
 ---
 <section class="home-hero">
   <div>

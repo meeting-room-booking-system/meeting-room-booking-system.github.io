@@ -2,6 +2,7 @@
 layout: page
 title: Privacy
 permalink: /privacy/
+description: "Privacy information for the MRBS website, including how Google Analytics is used only with your consent."
 ---
 <p>This website provides information about MRBS. It has no accounts, forms or comments.</p>
 

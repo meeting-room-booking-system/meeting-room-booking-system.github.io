@@ -1,6 +1,26 @@
 title: MRBS
-description: Meeting Room Booking System
+description: MRBS is a free, open-source, web-based application for booking meeting rooms and other shared resources. It runs on PHP with MySQL or PostgreSQL.
 url: https://meeting-room-booking-system.github.io
 baseurl: ""
 markdown: kramdown
 permalink: pretty
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+defaults:
+  - scope:
+      path: ""
+    values:
+      image: /screenshots/mrbs_main.png
+  - scope:
+      path: "documentation"
+    values:
+      description: Documentation for the Meeting Room Booking System (MRBS), including installation, upgrading, authentication and language support.
+  - scope:
+      path: "documentation/changelog.md"
+    values:
+      description: The MRBS ChangeLog, listing the changes in each release of the Meeting Room Booking System.
+  - scope:
+      path: "documentation/news.md"
+    values:
+      description: News about each release of the Meeting Room Booking System (MRBS).

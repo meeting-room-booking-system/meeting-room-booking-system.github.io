@@ -2,6 +2,7 @@
 layout: page
 title: Demo
 permalink: /demo/
+description: "Try the Meeting Room Booking System (MRBS) in an online demonstration."
 ---
 <p>These installations demonstrate MRBS with standard configuration. They are maintained separately from this information site.</p>
 

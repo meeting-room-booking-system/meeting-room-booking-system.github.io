@@ -2,6 +2,7 @@
 layout: page
 title: Download
 permalink: /download/
+description: "Download the latest release of the Meeting Room Booking System (MRBS) from GitHub or SourceForge, or browse the source code."
 ---
 <p>Get an MRBS release from GitHub or SourceForge, or browse the application source on GitHub.</p>
 

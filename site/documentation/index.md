@@ -2,6 +2,7 @@
 layout: page
 title: Documentation
 permalink: /documentation/
+description: "Documentation for the Meeting Room Booking System (MRBS): installation, upgrading, authentication, languages and licence."
 ---
 <p>Guides and project documents imported from the public <a href="https://github.com/meeting-room-booking-system/mrbs-code">MRBS code repository</a>.</p>
 
