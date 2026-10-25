@@ -36,6 +36,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Run tests
+        run: python3 -m unittest discover -s tests
+
       - name: Resolve mrbs-code ref
         id: ref
         env:
