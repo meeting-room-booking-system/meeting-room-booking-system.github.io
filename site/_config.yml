@@ -24,3 +24,7 @@ defaults:
       path: "documentation/news.md"
     values:
       description: News about each release of the Meeting Room Booking System (MRBS).
+  - scope:
+      path: "google*.html"
+    values:
+      sitemap: false
