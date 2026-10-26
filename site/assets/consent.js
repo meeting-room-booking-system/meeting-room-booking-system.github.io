@@ -6,6 +6,18 @@
   var privacyUrl = script.getAttribute('data-privacy-url');
   var STORAGE_KEY = 'mrbs-analytics-consent';
 
+  function getSafePrivacyUrl(url) {
+    try {
+      var parsed = new URL(url, window.location.origin);
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+        return parsed.href;
+      }
+    } catch (e) {
+      // Fall through to safe default.
+    }
+    return '/privacy';
+  }
+
   function getChoice() {
     try {
       return window.localStorage.getItem(STORAGE_KEY);
@@ -90,7 +102,7 @@
       ' We would like to use Google Analytics cookies to understand how this site is used. ' +
       'Nothing is collected unless you accept. '));
     var link = document.createElement('a');
-    link.href = privacyUrl;
+    link.href = getSafePrivacyUrl(privacyUrl);
     link.textContent = 'Privacy information';
     text.appendChild(link);
 
