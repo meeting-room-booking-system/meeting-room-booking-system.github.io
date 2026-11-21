@@ -2,13 +2,12 @@
 layout: page
 title: Download
 permalink: /download/
-description: "Download the latest release of the Meeting Room Booking System (MRBS) from GitHub or SourceForge, or browse the source code."
+description: "Download the latest release of the Meeting Room Booking System (MRBS) from GitHub, or browse the source code."
 ---
-<p>Get an MRBS release from GitHub or SourceForge, or browse the application source on GitHub.</p>
+<p>Get an MRBS release from GitHub, or browse the application source on GitHub.</p>
 
 <div class="actions">
   <a class="button" href="https://github.com/meeting-room-booking-system/mrbs-code/releases">GitHub releases</a>
-  <a class="button button-secondary" href="https://sourceforge.net/projects/mrbs/files">SourceForge files</a>
   <a class="button button-secondary" href="https://github.com/meeting-room-booking-system/mrbs-code">Browse the code</a>
 </div>
 
